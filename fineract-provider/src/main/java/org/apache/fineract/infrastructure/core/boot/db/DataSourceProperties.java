@@ -42,10 +42,10 @@ public class DataSourceProperties extends PoolProperties {
     public final static String PROTOCOL = "fineract.datasource.protocol";
     public final static String SUBPROTOCOL = "fineract.datasource.subprotocol";
 
-    @Value("${" + PORT + ":3306}")
+    @Value("${" + PORT + ":4900}")
     private volatile @NotNull int port;
 
-    @Value("${" + HOST + ":localhost}")
+    @Value("${" + HOST + ":10.0.0.99}")
     private volatile @NotNull String hostname;
 
     @Value("${" + DB + ":mifosplatform-tenants}")
