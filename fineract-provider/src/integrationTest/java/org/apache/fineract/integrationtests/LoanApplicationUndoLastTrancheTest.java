@@ -18,13 +18,10 @@
  */
 package org.apache.fineract.integrationtests;
 
-import java.math.BigDecimal;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.fineract.integrationtests.LoanApplicationApprovalTest;
 import org.apache.fineract.integrationtests.common.ClientHelper;
 import org.apache.fineract.integrationtests.common.Utils;
 import org.apache.fineract.integrationtests.common.loans.LoanApplicationTestBuilder;

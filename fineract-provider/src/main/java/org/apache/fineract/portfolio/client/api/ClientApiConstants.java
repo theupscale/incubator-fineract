@@ -18,11 +18,11 @@
  */
 package org.apache.fineract.portfolio.client.api;
 
+import org.apache.fineract.portfolio.client.data.ClientData;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.apache.fineract.portfolio.client.data.ClientData;
 
 public class ClientApiConstants {
 
@@ -80,6 +80,7 @@ public class ClientApiConstants {
     public static final String firstnameParamName = "firstname";
     public static final String middlenameParamName = "middlename";
     public static final String lastnameParamName = "lastname";
+    public static final String fathernameParamName = "fathername";
     public static final String fullnameParamName = "fullname";
     public static final String displaynameParamName = "displayname";
     public static final String officeIdParamName = "officeId";
@@ -176,7 +177,7 @@ public class ClientApiConstants {
 
     public static final Set<String> CLIENT_CREATE_REQUEST_DATA_PARAMETERS = new HashSet<>(
             Arrays.asList(localeParamName, dateFormatParamName, groupIdParamName, accountNoParamName, externalIdParamName,
-                    mobileNoParamName, firstnameParamName, middlenameParamName, lastnameParamName, fullnameParamName, officeIdParamName,
+                    mobileNoParamName, firstnameParamName, middlenameParamName, lastnameParamName, fullnameParamName,fathernameParamName, officeIdParamName,
                     activeParamName, activationDateParamName, staffIdParamName, submittedOnDateParamName, savingsProductIdParamName,
                     dateOfBirthParamName, genderIdParamName, clientTypeIdParamName, clientClassificationIdParamName, 
                     clientNonPersonDetailsParamName, displaynameParamName, legalFormIdParamName));
@@ -203,7 +204,7 @@ public class ClientApiConstants {
      */
     public static final Set<String> CLIENT_RESPONSE_DATA_PARAMETERS = new HashSet<>(Arrays.asList(idParamName, accountNoParamName,
             externalIdParamName, statusParamName, activeParamName, activationDateParamName, firstnameParamName, middlenameParamName,
-            lastnameParamName, fullnameParamName, displayNameParamName, mobileNoParamName, officeIdParamName, officeNameParamName,
+            lastnameParamName, fullnameParamName,fathernameParamName, displayNameParamName, mobileNoParamName, officeIdParamName, officeNameParamName,
             transferToOfficeIdParamName, transferToOfficeNameParamName, hierarchyParamName, imageIdParamName, imagePresentParamName,
             staffIdParamName, staffNameParamName, timelineParamName, groupsParamName, officeOptionsParamName, staffOptionsParamName,
             dateOfBirthParamName, genderParamName, clientTypeParamName, clientClassificationParamName, legalFormParamName, 
