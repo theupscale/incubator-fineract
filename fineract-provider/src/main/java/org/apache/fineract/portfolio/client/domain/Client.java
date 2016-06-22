@@ -18,28 +18,6 @@
  */
 package org.apache.fineract.portfolio.client.domain;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
-
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.fineract.infrastructure.codes.domain.CodeValue;
@@ -62,6 +40,9 @@ import org.hibernate.annotations.LazyCollectionOption;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.data.jpa.domain.AbstractPersistable;
+
+import javax.persistence.*;
+import java.util.*;
 
 @Entity
 @Table(name = "m_client", uniqueConstraints = { @UniqueConstraint(columnNames = { "account_no" }, name = "account_no_UNIQUE"), //
@@ -112,6 +93,9 @@ public final class Client extends AbstractPersistable<Long> {
 
     @Column(name = "fullname", length = 100, nullable = true)
     private String fullname;
+
+    @Column(name = "fathername", length = 20, nullable = true)
+    private String fathername;
 
     @Column(name = "display_name", length = 100, nullable = false)
     private String displayName;
@@ -237,6 +221,7 @@ public final class Client extends AbstractPersistable<Long> {
         final String middlename = command.stringValueOfParameterNamed(ClientApiConstants.middlenameParamName);
         final String lastname = command.stringValueOfParameterNamed(ClientApiConstants.lastnameParamName);
         final String fullname = command.stringValueOfParameterNamed(ClientApiConstants.fullnameParamName);
+        final String fathername = command.stringValueOfParameterNamed(ClientApiConstants.fathernameParamName);
 
         final LocalDate dataOfBirth = command.localDateValueOfParameterNamed(ClientApiConstants.dateOfBirthParamName);
 
@@ -262,7 +247,7 @@ public final class Client extends AbstractPersistable<Long> {
             submittedOnDate = command.localDateValueOfParameterNamed(ClientApiConstants.submittedOnDateParamName);
         }
         final SavingsAccount account = null;
-        return new Client(currentUser, status, clientOffice, clientParentGroup, accountNo, firstname, middlename, lastname, fullname,
+        return new Client(currentUser, status, clientOffice, clientParentGroup, accountNo, firstname, middlename, lastname, fullname,fathername,
                 activationDate, officeJoiningDate, externalId, mobileNo, staff, submittedOnDate, savingsProduct, account, dataOfBirth,
                 gender, clientType, clientClassification, legalForm);
     }
@@ -272,7 +257,7 @@ public final class Client extends AbstractPersistable<Long> {
     }
 
     private Client(final AppUser currentUser, final ClientStatus status, final Office office, final Group clientParentGroup,
-            final String accountNo, final String firstname, final String middlename, final String lastname, final String fullname,
+            final String accountNo, final String firstname, final String middlename, final String lastname, final String fullname,final String fathername,
             final LocalDate activationDate, final LocalDate officeJoiningDate, final String externalId, final String mobileNo,
             final Staff staff, final LocalDate submittedOnDate, final SavingsProduct savingsProduct, final SavingsAccount savingsAccount,
             final LocalDate dateOfBirth, final CodeValue gender, final CodeValue clientType, final CodeValue clientClassification, final Integer legalForm) {
@@ -330,6 +315,13 @@ public final class Client extends AbstractPersistable<Long> {
             this.fullname = fullname.trim();
         } else {
             this.fullname = null;
+        }
+
+        if (StringUtils.isNotBlank(fathername)){
+            this.fathername = fathername.trim();
+
+        }else {
+            this.fathername = null;
         }
 
         if (clientParentGroup != null) {
@@ -502,6 +494,11 @@ public final class Client extends AbstractPersistable<Long> {
             final String newValue = command.stringValueOfParameterNamed(ClientApiConstants.fullnameParamName);
             actualChanges.put(ClientApiConstants.fullnameParamName, newValue);
             this.fullname = newValue;
+        }
+        if (command.isChangeInStringParameterNamed(ClientApiConstants.fathernameParamName, this.fathername)){
+            final String newvalue = command.stringValueOfParameterNamed(ClientApiConstants.fathernameParamName);
+            actualChanges.put(ClientApiConstants.fathernameParamName, newvalue);
+            this.fathername = newvalue;
         }
 
         if (command.isChangeInLongParameterNamed(ClientApiConstants.staffIdParamName, staffId())) {

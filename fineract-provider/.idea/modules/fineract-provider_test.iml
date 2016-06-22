@@ -30,6 +30,7 @@
     <orderEntry type="library" name="Gradle: joda-time:joda-time:2.4" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.commons:commons-email:1.3.3" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.commons:commons-lang3:3.3.2" level="project" />
+    <orderEntry type="library" name="Gradle: commons-io:commons-io:2.4" level="project" />
     <orderEntry type="library" name="Gradle: mysql:mysql-connector-java:5.1.27" level="project" />
     <orderEntry type="library" name="Gradle: pentaho-reporting-engine:pentaho-reporting-engine-classic-core:3.9.1.1" level="project" />
     <orderEntry type="library" name="Gradle: pentaho-reporting-engine:pentaho-reporting-engine-classic-extensions:3.9.1-GA" level="project" />
