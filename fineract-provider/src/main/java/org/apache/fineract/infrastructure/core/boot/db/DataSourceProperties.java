@@ -18,11 +18,11 @@
  */
 package org.apache.fineract.infrastructure.core.boot.db;
 
-import javax.validation.constraints.NotNull;
-
 import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * Configurable DataSource. Properties have sensible defaults, but end-users can
@@ -42,10 +42,10 @@ public class DataSourceProperties extends PoolProperties {
     public final static String PROTOCOL = "fineract.datasource.protocol";
     public final static String SUBPROTOCOL = "fineract.datasource.subprotocol";
 
-    @Value("${" + PORT + ":3306}")
+    @Value("${" + PORT + ":4900}")
     private volatile @NotNull int port;
 
-    @Value("${" + HOST + ":localhost}")
+    @Value("${" + HOST + ":192.168.99.100}")
     private volatile @NotNull String hostname;
 
     @Value("${" + DB + ":mifosplatform-tenants}")
