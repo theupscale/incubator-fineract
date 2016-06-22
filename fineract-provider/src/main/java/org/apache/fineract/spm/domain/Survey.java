@@ -18,11 +18,12 @@
  */
 package org.apache.fineract.spm.domain;
 
-import org.springframework.data.jpa.domain.AbstractPersistable;
-
-import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+
+import javax.persistence.*;
+
+import org.springframework.data.jpa.domain.AbstractPersistable;
 
 @Entity
 @Table(name = "m_surveys")

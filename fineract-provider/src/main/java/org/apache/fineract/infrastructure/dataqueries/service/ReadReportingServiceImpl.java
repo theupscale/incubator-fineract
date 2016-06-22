@@ -208,7 +208,8 @@ public class ReadReportingServiceImpl implements ReadReportingService {
 
         final String inputSql = "select " + type + "_sql as the_sql from stretchy_" + type + " where " + type + "_name = '" + name + "'";
         final String inputSqlWrapped = this.genericDataService.wrapSQL(inputSql);
-
+      
+        
         final SqlRowSet rs = this.jdbcTemplate.queryForRowSet(inputSqlWrapped);
 
         if (rs.next() && rs.getString("the_sql") != null) { return rs.getString("the_sql"); }

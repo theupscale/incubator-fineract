@@ -18,12 +18,13 @@
  */
 package org.apache.fineract.spm.domain;
 
+import java.util.Date;
+
+import javax.persistence.*;
+
 import org.apache.fineract.portfolio.client.domain.Client;
 import org.apache.fineract.useradministration.domain.AppUser;
 import org.springframework.data.jpa.domain.AbstractPersistable;
-
-import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Table(name = "m_survey_scorecards")
