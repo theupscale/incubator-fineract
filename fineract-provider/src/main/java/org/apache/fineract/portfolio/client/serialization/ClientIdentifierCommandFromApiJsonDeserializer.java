@@ -33,6 +33,7 @@ import org.apache.fineract.portfolio.client.command.ClientIdentifierCommand;
 import org.apache.fineract.portfolio.client.domain.ClientIdentifierStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.joda.time.LocalDate;
 
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
@@ -47,7 +48,7 @@ public final class ClientIdentifierCommandFromApiJsonDeserializer extends Abstra
     /**
      * The parameters supported for this command.
      */
-    private final Set<String> supportedParameters = new HashSet<>(Arrays.asList("documentTypeId", "documentKey","status", "description"));
+    private final Set<String> supportedParameters = new HashSet<>(Arrays.asList("documentTypeId", "proofTypeId", "documentKey", "validity", "isLifeTime", "locale", "dateFormat", "status", "description"));
 
     private final FromJsonHelper fromApiJsonHelper;
 
@@ -66,9 +67,14 @@ public final class ClientIdentifierCommandFromApiJsonDeserializer extends Abstra
 
         final JsonElement element = this.fromApiJsonHelper.parse(json);
         final Long documentTypeId = this.fromApiJsonHelper.extractLongNamed("documentTypeId", element);
+        final Long proofTypeId = this.fromApiJsonHelper.extractLongNamed("proofTypeId", element);
         final String documentKey = this.fromApiJsonHelper.extractStringNamed("documentKey", element);
         final String documentDescription = this.fromApiJsonHelper.extractStringNamed("documentDescription", element);
         final String statusString = this.fromApiJsonHelper.extractStringNamed("status", element);
-        return new ClientIdentifierCommand(documentTypeId, documentKey, statusString, documentDescription);
+        final String dateFormat = this.fromApiJsonHelper.extractStringNamed("dateFormat",element);
+        final LocalDate validity = this.fromApiJsonHelper.extractLocalDateNamed("validity", element);
+    	final Boolean isLifeTime = this.fromApiJsonHelper.extractBooleanNamed("isLifeTime", element);
+    	final String locale = this.fromApiJsonHelper.extractStringNamed("locale", element);
+    	return new ClientIdentifierCommand(documentTypeId, proofTypeId, documentKey, validity, isLifeTime, locale, dateFormat, statusString, documentDescription);
     }
 }

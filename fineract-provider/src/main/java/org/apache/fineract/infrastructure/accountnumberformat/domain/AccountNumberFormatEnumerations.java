@@ -44,8 +44,7 @@ public class AccountNumberFormatEnumerations {
     public enum AccountNumberPrefixType {
         OFFICE_NAME(1, "accountNumberPrefixType.officeName"), CLIENT_TYPE(101, "accountNumberPrefixType.clientType"), LOAN_PRODUCT_SHORT_NAME(
                 201, "accountNumberPrefixType.loanProductShortName"), SAVINGS_PRODUCT_SHORT_NAME(301,
-                "accountNumberPrefixType.savingsProductShortName", OFFICE_AND_LOAN_PRODUCT_NAME(401,"accountNumberPrefixType.officeNameandLoanProductShortName");
-
+                "accountNumberPrefixType.savingsProductShortName"), OFFICE_AND_LOAN_PRODUCT_NAME(401,"accountNumberPrefixType.officeNameandLoanProductShortName");
         private final Integer value;
         private final String code;
 
