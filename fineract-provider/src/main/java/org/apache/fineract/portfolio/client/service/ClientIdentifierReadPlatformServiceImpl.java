@@ -122,7 +122,4 @@ public class ClientIdentifierReadPlatformServiceImpl implements ClientIdentifier
             return ClientIdentifierData.singleItem(id, clientId, documentType, proofType, documentKey, validity, isLifeTime, null, null, status, description);
         }
       }
-
-    }
-
 }

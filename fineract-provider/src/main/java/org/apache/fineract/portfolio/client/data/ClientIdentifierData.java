@@ -54,8 +54,7 @@ public class ClientIdentifierData {
     }
 
     public static ClientIdentifierData template(final ClientIdentifierData data, final Collection<CodeValueData> codeValues, final Collection<CodeValueData> proofValues) {
-        return new ClientIdentifierData(data.id, data.clientId, data.documentType, data.proofType, data.documentKey, data.validity, data.isLifeTime, data.locale,
-                data.dateFormat, data.description, data.status,  codeValues, proofValuesdata.id, data.clientId, data.documentType, data.documentKey, data.description, data.status,  codeValues);
+        return new ClientIdentifierData(data.id, data.clientId, data.documentType, data.proofType, data.documentKey, data.validity, data.isLifeTime, data.locale, data.dateFormat, data.description, data.status,  codeValues, proofValues);
     }
 
  public ClientIdentifierData(final Long id, final Long clientId, final CodeValueData documentType, final CodeValueData proofType, final String documentKey, final LocalDate validity,
