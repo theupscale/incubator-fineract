@@ -18,16 +18,15 @@
  */
 package org.apache.fineract.spm.service;
 
+import java.util.Date;
+import java.util.List;
+
 import org.apache.fineract.infrastructure.security.service.PlatformSecurityContext;
 import org.apache.fineract.spm.domain.Survey;
 import org.apache.fineract.spm.repository.SurveyRepository;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Date;
-import java.util.List;
 
 @Service
 public class SpmService {

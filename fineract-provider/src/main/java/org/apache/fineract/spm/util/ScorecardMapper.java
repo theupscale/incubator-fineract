@@ -18,7 +18,8 @@
  */
 package org.apache.fineract.spm.util;
 
-import org.apache.fineract.organisation.staff.domain.Staff;
+import java.util.*;
+
 import org.apache.fineract.portfolio.client.domain.Client;
 import org.apache.fineract.spm.data.ScorecardData;
 import org.apache.fineract.spm.data.ScorecardValue;
@@ -27,8 +28,6 @@ import org.apache.fineract.spm.domain.Response;
 import org.apache.fineract.spm.domain.Scorecard;
 import org.apache.fineract.spm.domain.Survey;
 import org.apache.fineract.useradministration.domain.AppUser;
-
-import java.util.*;
 
 public class ScorecardMapper {
 
