@@ -31,9 +31,8 @@ import org.apache.fineract.integrationtests.common.Utils;
 import org.apache.fineract.integrationtests.common.accounting.Account;
 import org.apache.fineract.integrationtests.common.accounting.AccountHelper;
 import org.apache.fineract.integrationtests.common.accounting.FinancialActivityAccountHelper;
-import org.junit.Assert;
-
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 

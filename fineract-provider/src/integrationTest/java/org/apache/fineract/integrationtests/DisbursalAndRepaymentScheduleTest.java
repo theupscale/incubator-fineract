@@ -25,7 +25,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 
 import org.apache.fineract.integrationtests.common.*;
 import org.apache.fineract.integrationtests.common.loans.*;
