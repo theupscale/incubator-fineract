@@ -20,6 +20,7 @@ package org.apache.fineract.portfolio.client.command;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.joda.time.LocalDate;
 
 import org.apache.fineract.infrastructure.core.data.ApiParameterError;
 import org.apache.fineract.infrastructure.core.data.DataValidatorBuilder;
@@ -32,13 +33,24 @@ import org.apache.fineract.portfolio.client.domain.ClientIdentifierStatus;
 public class ClientIdentifierCommand {
 
     private final Long documentTypeId;
+    private final Long proofTypeId;
     private final String documentKey;
+    private final LocalDate validity;
+    private final boolean isLifeTime;
+    private final String locale;
+    private final String dateFormat;
     private final String description;
 	private final String status;
 
-    public ClientIdentifierCommand(final Long documentTypeId, final String documentKey, final String statusString, final String description) {
+    public ClientIdentifierCommand(final Long documentTypeId, final Long proofTypeId, final String documentKey, final LocalDate validity, final boolean isLifeTime, 
+                        final String locale, final String dateFormat, final String statusString, final String description) {
         this.documentTypeId = documentTypeId;
+        this.proofTypeId = proofTypeId;
         this.documentKey = documentKey;
+        this.validity = validity;
+        this.isLifeTime = isLifeTime;
+        this.locale = locale;
+        this.dateFormat = dateFormat;
         this.status = statusString;
         this.description = description;
     }
@@ -54,6 +66,21 @@ public class ClientIdentifierCommand {
     public String getDescription() {
         return this.description;
     }
+    
+    public LocalDate getValidity() {
+		return this.validity;
+	}
+    public boolean getisLifeTime() { 
+    	return this.isLifeTime;
+    }
+    
+    public String getlocale() {
+    	return this.locale;
+    }
+    
+    public Long getproofTypeId() {
+    	return this.proofTypeId;
+    }
 
     public void validateForCreate() {
         final List<ApiParameterError> dataValidationErrors = new ArrayList<>();
@@ -62,6 +89,9 @@ public class ClientIdentifierCommand {
 
         baseDataValidator.reset().parameter("documentTypeId").value(this.documentTypeId).notNull().integerGreaterThanZero();
         baseDataValidator.reset().parameter("documentKey").value(this.documentKey).notBlank();
+        
+        baseDataValidator.reset().parameter("validity").value(this.validity).validateDateAfter(LocalDate.now().plusMonths(1)).ignoreIfNull();
+		baseDataValidator.reset().parameter("isLifeTime").value(this.isLifeTime).ignoreIfNull();
 
         if (!dataValidationErrors.isEmpty()) { throw new PlatformApiDataValidationException("validation.msg.validation.errors.exist",
                 "Validation errors exist.", dataValidationErrors); }
