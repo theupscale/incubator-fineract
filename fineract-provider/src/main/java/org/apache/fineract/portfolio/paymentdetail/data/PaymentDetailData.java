@@ -39,6 +39,8 @@ public class PaymentDetailData {
     private final String receiptNumber;
     @SuppressWarnings("unused")
     private final String bankNumber;
+    private final String checkDate;
+    private final String bankName;
 
     public PaymentDetailData(final Long id, final PaymentTypeData paymentType, final String accountNumber, final String checkNumber,
             final String routingCode, final String receiptNumber, final String bankNumber) {

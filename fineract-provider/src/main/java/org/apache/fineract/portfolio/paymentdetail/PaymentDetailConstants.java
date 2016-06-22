@@ -34,11 +34,13 @@ public class PaymentDetailConstants {
     public static final String routingCodeParamName = "routingCode";
     public static final String receiptNumberParamName = "receiptNumber";
     public static final String bankNumberParamName = "bankNumber";
+    public static final String bankNameParamName = "bankName";
+    public static final String checkDateParamName = "checkDate";
 
     // template related part of response
     public static final String officeOptionsParamName = "paymentTypeOptions";
 
     public static final Set<String> PAYMENT_CREATE_REQUEST_DATA_PARAMETERS = new HashSet<>(Arrays.asList(accountNumberParamName,
-            checkNumberParamName, routingCodeParamName, receiptNumberParamName, bankNumberParamName));
+            checkNumberParamName, routingCodeParamName, receiptNumberParamName, bankNumberParamName, bankNumberParamName, checkDateParamName));
 
 }
