@@ -780,4 +780,8 @@ public final class LoanTransaction extends AbstractPersistable<Long> {
     public boolean isAccrualTransaction() {
         return isAccrual();
     }
+
+	public PaymentDetail getPaymentDetail() {
+		return this.paymentDetail;
+	}
 }
