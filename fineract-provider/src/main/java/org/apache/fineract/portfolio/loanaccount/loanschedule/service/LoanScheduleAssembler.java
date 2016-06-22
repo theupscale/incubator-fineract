@@ -97,6 +97,7 @@ import org.apache.fineract.portfolio.loanaccount.loanschedule.domain.LoanApplica
 import org.apache.fineract.portfolio.loanaccount.loanschedule.domain.LoanScheduleGenerator;
 import org.apache.fineract.portfolio.loanaccount.loanschedule.domain.LoanScheduleGeneratorFactory;
 import org.apache.fineract.portfolio.loanaccount.loanschedule.domain.LoanScheduleModel;
+import org.apache.fineract.portfolio.loanaccount.loanschedule.domain.RateFunction;
 import org.apache.fineract.portfolio.loanaccount.serialization.VariableLoanScheduleFromApiJsonValidator;
 import org.apache.fineract.portfolio.loanaccount.service.LoanChargeAssembler;
 import org.apache.fineract.portfolio.loanaccount.service.LoanUtilService;
@@ -218,14 +219,43 @@ public class LoanScheduleAssembler {
         if (allowPartialPeriodInterestCalcualtion == null) {
             allowPartialPeriodInterestCalcualtion = loanProduct.getLoanProductRelatedDetail().isAllowPartialPeriodInterestCalcualtion();
         }
-
-        final BigDecimal interestRatePerPeriod = this.fromApiJsonHelper.extractBigDecimalWithLocaleNamed("interestRatePerPeriod", element);
+        
+        
+        
+        	BigDecimal flatInterestRatePerPeriod = this.fromApiJsonHelper.extractBigDecimalWithLocaleNamed("flatInterestRatePerPeriod", element);
+        
+        	/*
+        	 * When the flatInterestIs Provided calculate the annualNominalInterest
+        	 * Case 1 FlatIntrestRate is Provide
+        	 * 
+        	 * Case 2 Annual Interest is provide and flatInterestRate is not provided
+        	 * 
+        	 * 
+        	 */
+        	
+        	
+        		
+        	BigDecimal interestRatePerPeriod = this.fromApiJsonHelper.extractBigDecimalWithLocaleNamed("interestRatePerPeriod", element);
         final PeriodFrequencyType interestRatePeriodFrequencyType = loanProduct.getInterestPeriodFrequencyType();
-
-        BigDecimal annualNominalInterestRate = BigDecimal.ZERO;
-        if (interestRatePerPeriod != null) {
-            annualNominalInterestRate = this.aprCalculator.calculateFrom(interestRatePeriodFrequencyType, interestRatePerPeriod);
-        }
+                
+                BigDecimal annualNominalInterestRate = BigDecimal.ZERO;
+                if (interestRatePerPeriod != null) {
+                    annualNominalInterestRate = this.aprCalculator.calculateFrom(interestRatePeriodFrequencyType, interestRatePerPeriod);
+                }
+        	
+                if (flatInterestRatePerPeriod != null){
+                	
+            		BigDecimal rate = RateFunction.rate(numberOfRepayments, nominalInterestCalculate(flatInterestRatePerPeriod, numberOfRepayments), 100.0, null, null, null);
+            		
+            		MathContext mc = new MathContext(4, RoundingMode.HALF_DOWN);
+            		interestRatePerPeriod = rate.multiply(BigDecimal.valueOf(1200),mc);
+            			
+            	}else {
+            		flatInterestRatePerPeriod = BigDecimal.ZERO;
+            				
+            	}
+        
+        
 
         // disbursement details
         final BigDecimal principal = this.fromApiJsonHelper.extractBigDecimalWithLocaleNamed("principal", element);
@@ -441,13 +471,35 @@ public class LoanScheduleAssembler {
                 allowPartialPeriodInterestCalcualtion, principalMoney, expectedDisbursementDate, repaymentsStartingFromDate,
                 calculatedRepaymentsStartingFromDate, graceOnPrincipalPayment, recurringMoratoriumOnPrincipalPeriods, graceOnInterestPayment, graceOnInterestCharged,
                 interestChargedFromDate, inArrearsToleranceMoney, loanProduct.isMultiDisburseLoan(), emiAmount, disbursementDatas,
-                maxOutstandingBalance, graceOnArrearsAgeing, daysInMonthType, daysInYearType, isInterestRecalculationEnabled,
+                maxOutstandingBalance, graceOnArrearsAgeing, daysInMonthType, daysInYearType, isInterestRecalculationEnabled,flatInterestRatePerPeriod,
                 recalculationFrequencyType, restCalendarInstance, compoundingMethod, compoundingCalendarInstance, compoundingFrequencyType,
                 principalThresholdForLastInstalment, installmentAmountInMultiplesOf, loanProduct.preCloseInterestCalculationStrategy(),
                 calendar, BigDecimal.ZERO, loanTermVariations, isInterestChargedFromDateSameAsDisbursalDateEnabled,numberOfDays, isSkipMeetingOnFirstDay, detailDTO,
                 allowCompoundingOnEod);
 }
 
+    
+    private BigDecimal nominalInterestCalculate(BigDecimal flatInterestRatePerPeriod, Integer numberOfRepayments) {
+		final Integer period;
+		final BigDecimal cal_one;
+		final BigDecimal cal_two;
+		final BigDecimal cal;
+		
+		period = numberOfRepayments / 12;
+		
+		cal_one = flatInterestRatePerPeriod.multiply(BigDecimal.valueOf(period.doubleValue()));
+		
+		cal_two = cal_one.add(BigDecimal.valueOf(100));
+		
+
+		
+		//MathContext mc = new MathContext(2, RoundingMode.HALF_DOWN);
+		
+		cal = cal_two.divide(BigDecimal.valueOf(numberOfRepayments.doubleValue()), 2, RoundingMode.HALF_DOWN);
+		
+		return cal;
+	}
+    
     private CalendarInstance createCalendarForSameAsRepayment(final Integer repaymentEvery,
             final PeriodFrequencyType repaymentPeriodFrequencyType, final LocalDate expectedDisbursementDate) {
         final Integer recalculationFrequencyNthDay = null;

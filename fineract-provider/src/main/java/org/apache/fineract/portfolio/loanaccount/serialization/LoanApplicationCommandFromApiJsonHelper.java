@@ -78,6 +78,7 @@ public final class LoanApplicationCommandFromApiJsonHelper {
             LoanApiConstants.interestChargedFromDateParameterName,
             LoanApiConstants.submittedOnDateParameterName,
             LoanApiConstants.submittedOnNoteParameterName,
+            "flatInterestRatePerPeriod",
             LoanApiConstants.accountNoParameterName,
             LoanApiConstants.externalIdParameterName,
             LoanApiConstants.fundIdParameterName,
@@ -299,6 +300,11 @@ public final class LoanApplicationCommandFromApiJsonHelper {
             baseDataValidator.reset().parameter(interestRatePerPeriodParameterName).value(interestRatePerPeriod).notNull()
                     .zeroOrPositiveAmount();
 
+        }
+        	
+        if (this.fromApiJsonHelper.parameterExists("flatInterestRatePerPeriod", element)){
+        			final BigDecimal flatInterestRatePerPeriod = this.fromApiJsonHelper.extractBigDecimalWithLocaleNamed("flatInterestRatePerPeriod", element);
+        			baseDataValidator.reset().parameter("flatInterestRatePerPeriod").value(flatInterestRatePerPeriod);
         }
 
         final String amortizationTypeParameterName = "amortizationType";
