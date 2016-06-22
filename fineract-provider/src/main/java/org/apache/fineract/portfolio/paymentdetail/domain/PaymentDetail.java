@@ -115,4 +115,8 @@ public final class PaymentDetail extends AbstractPersistable<Long> {
         return this.paymentType;
     }
 
+	public String getChequeNo() {
+		return this.checkNumber;
+	}
+
 }
