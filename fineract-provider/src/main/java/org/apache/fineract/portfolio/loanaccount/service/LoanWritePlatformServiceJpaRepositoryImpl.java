@@ -1190,7 +1190,7 @@ public class LoanWritePlatformServiceJpaRepositoryImpl implements LoanWritePlatf
 
 			final PaymentInventoryPdc paymentInventoryPdc = this.paymentInventoryPdc.findOne(payment.getId());
 
-			if(transactionAmount.equals(new BigDecimal(0))) {
+			if(transactionToAdjust.getTransactionStatus() == 1 && transactionAmount.equals(new BigDecimal(0))) {
 				transactionToAdjust.setTransactionStatus(3);
 				paymentInventoryPdc.setPresentationStatus(4);
 			}
