@@ -145,6 +145,7 @@ import org.apache.fineract.portfolio.loanaccount.domain.LoanSummaryWrapper;
 import org.apache.fineract.portfolio.loanaccount.domain.LoanTrancheDisbursementCharge;
 import org.apache.fineract.portfolio.loanaccount.domain.LoanTransaction;
 import org.apache.fineract.portfolio.loanaccount.domain.LoanTransactionRepository;
+import org.apache.fineract.portfolio.loanaccount.domain.LoanTransactionStatusType;
 import org.apache.fineract.portfolio.loanaccount.domain.LoanTransactionType;
 import org.apache.fineract.portfolio.loanaccount.domain.PaymentInventory;
 import org.apache.fineract.portfolio.loanaccount.domain.PaymentInventoryPdc;
@@ -162,6 +163,7 @@ import org.apache.fineract.portfolio.loanaccount.exception.LoanTransactionNotFou
 import org.apache.fineract.portfolio.loanaccount.exception.MultiDisbursementDataRequiredException;
 import org.apache.fineract.portfolio.loanaccount.exception.PdcChequeAlreadyPresentedAndDeclined;
 import org.apache.fineract.portfolio.loanaccount.guarantor.service.GuarantorDomainService;
+import org.apache.fineract.portfolio.loanaccount.handler.UpdateTransactionStatusCommandHandler;
 import org.apache.fineract.portfolio.loanaccount.loanschedule.data.OverdueLoanScheduleData;
 import org.apache.fineract.portfolio.loanaccount.loanschedule.domain.DefaultScheduledDateGenerator;
 import org.apache.fineract.portfolio.loanaccount.loanschedule.domain.LoanScheduleModel;
@@ -877,6 +879,8 @@ public class LoanWritePlatformServiceJpaRepositoryImpl implements LoanWritePlatf
 		final String paymentName = paymentType.getName();
 
 		if (paymentName.equals("PDC")) {
+			
+			
 
 			final PaymentInventoryData inventoryId = this.paymentInventoryService.retrieveBasedOnLoanId(loanId);
 			final PaymentInventoryPdcData payment;
@@ -973,6 +977,55 @@ public class LoanWritePlatformServiceJpaRepositoryImpl implements LoanWritePlatf
 
 	@Transactional
 	@Override
+	public CommandProcessingResult updateTransactionStatus(final Long loanId, final Long transactionId, 
+			final JsonCommand command) {
+
+		final Loan loan = this.loanAssembler.assembleFrom(loanId);
+		if (loan.status().isClosed() && loan.getLoanSubStatus().equals(LoanSubStatus.FORECLOSED.getValue())) {
+			final String defaultUserMessage = "The loan cannot reopend as it is foreclosed.";
+			throw new LoanForeclosureException("loan.cannot.be.reopened.as.it.is.foreclosured", defaultUserMessage,
+					loanId);
+		}
+
+		final LoanTransaction transactionStatusToUpdate = this.loanTransactionRepository.findOne(transactionId);
+		if (transactionStatusToUpdate == null) {
+			throw new LoanTransactionNotFoundException(transactionId);
+		}
+		
+		if(transactionStatusToUpdate.getPaymentDetail().getPaymentType().getValue().equals("PDC"))
+			if(transactionStatusToUpdate.getTransactionStatus() == 1) {
+				transactionStatusToUpdate.setTransactionStatus(command.integerValueOfParameterNamed("status"));
+			}
+		
+		final Long paymentTypeId = transactionStatusToUpdate.getPaymentDetail().getPaymentType().getId();
+
+		final PaymentTypeData paymentType = this.paymentType.retrieveOne(paymentTypeId);
+
+		if (paymentType.getName().equals("PDC")) {
+
+			final PaymentInventoryData inventoryId = this.paymentInventoryService.retrieveBasedOnLoanId(loanId);
+
+			final PaymentInventoryPdcData payment = this.paymentInventoryService.retrieveByCheque( 
+					transactionStatusToUpdate.getPaymentDetail().getChequeNo(),inventoryId.getId());
+
+			final PaymentInventoryPdc paymentInventoryPdc = this.paymentInventoryPdc.findOne(payment.getId());
+
+			if(transactionStatusToUpdate.getTransactionStatus() == 2) {
+				paymentInventoryPdc.setPresentationStatus(3);
+			}
+		}
+
+		return new CommandProcessingResultBuilder() //
+				.withCommandId(command.commandId()) //
+				.withEntityId(transactionId) //
+				.withOfficeId(loan.getOfficeId()) //
+				.withClientId(loan.getClientId()) //
+				.withLoanId(loanId) //
+				.build();
+	}
+	
+	@Transactional
+	@Override
 	public CommandProcessingResult adjustLoanTransaction(final Long loanId, final Long transactionId,
 			final JsonCommand command) {
 
@@ -1022,7 +1075,7 @@ public class LoanWritePlatformServiceJpaRepositoryImpl implements LoanWritePlatf
 		final PaymentDetail paymentDetail = this.paymentDetailWritePlatformService.createPaymentDetail(command,
 				changes);
 		LoanTransaction newTransactionDetail = LoanTransaction.repayment(loan.getOffice(), transactionAmountAsMoney,
-				paymentDetail, transactionDate, txnExternalId, DateUtils.getLocalDateTimeOfTenant(), currentUser);
+				paymentDetail, transactionDate, txnExternalId, DateUtils.getLocalDateTimeOfTenant(), currentUser,null);
 		if (transactionToAdjust.isInterestWaiver()) {
 			Money unrecognizedIncome = transactionAmountAsMoney.zero();
 			Money interestComponent = transactionAmountAsMoney;
@@ -1137,12 +1190,12 @@ public class LoanWritePlatformServiceJpaRepositoryImpl implements LoanWritePlatf
 
 			final PaymentInventoryPdc paymentInventoryPdc = this.paymentInventoryPdc.findOne(payment.getId());
 
-			if (transactionAmount.equals(new BigDecimal(0)))
+			if(transactionToAdjust.getTransactionStatus() == 1 && transactionAmount.equals(new BigDecimal(0))) {
+				transactionToAdjust.setTransactionStatus(3);
 				paymentInventoryPdc.setPresentationStatus(4);
-			else
-				paymentInventoryPdc.setPresentationStatus(3);
+			}
 		}
-
+			
 		return new CommandProcessingResultBuilder() //
 				.withCommandId(command.commandId()) //
 				.withEntityId(transactionId) //
