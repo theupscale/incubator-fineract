@@ -56,6 +56,12 @@ public final class PaymentDetail extends AbstractPersistable<Long> {
 
     @Column(name = "bank_number", length = 50)
     private String bankNumber;
+    
+    @Column(name = "check_date", length = 50)
+    private String checkDate;
+    
+    @Column(name = "bankName", length = 50)
+    private String bankName;
 
     protected PaymentDetail() {
 
@@ -68,7 +74,9 @@ public final class PaymentDetail extends AbstractPersistable<Long> {
         final String routingCode = command.stringValueOfParameterNamed(PaymentDetailConstants.routingCodeParamName);
         final String receiptNumber = command.stringValueOfParameterNamed(PaymentDetailConstants.receiptNumberParamName);
         final String bankNumber = command.stringValueOfParameterNamed(PaymentDetailConstants.bankNumberParamName);
-
+        final String checkDate = command.stringValueOfParameterNamed(PaymentDetailConstants.checkDateParamName);
+        final String bankName = command.stringValueOfParameterNamed(PaymentDetailConstants.bankNameParamName);
+        
         if (StringUtils.isNotBlank(accountNumber)) {
             changes.put(PaymentDetailConstants.accountNumberParamName, accountNumber);
         }
@@ -84,30 +92,41 @@ public final class PaymentDetail extends AbstractPersistable<Long> {
         if (StringUtils.isNotBlank(bankNumber)) {
             changes.put(PaymentDetailConstants.bankNumberParamName, bankNumber);
         }
+        
+        if (StringUtils.isNotBlank(checkDate)) {
+            changes.put(PaymentDetailConstants.checkDateParamName, checkDate);
+        }
+        
+        if (StringUtils.isNotBlank(bankName)) {
+            changes.put(PaymentDetailConstants.bankNameParamName, bankName);
+        }
+        
         final PaymentDetail paymentDetail = new PaymentDetail(paymentType, accountNumber, checkNumber, routingCode, receiptNumber,
-                bankNumber);
+                bankNumber, checkDate, bankName);
         return paymentDetail;
     }
 
     public static PaymentDetail instance(final PaymentType paymentType, final String accountNumber, final String checkNumber,
-            final String routingCode, final String receiptNumber, final String bankNumber) {
-        return new PaymentDetail(paymentType, accountNumber, checkNumber, routingCode, receiptNumber, bankNumber);
+            final String routingCode, final String receiptNumber, final String bankNumber, final String checkDate, final String bankName) {
+        return new PaymentDetail(paymentType, accountNumber, checkNumber, routingCode, receiptNumber, bankNumber, checkDate, bankName);
     }
 
     private PaymentDetail(final PaymentType paymentType, final String accountNumber, final String checkNumber, final String routingCode,
-            final String receiptNumber, final String bankNumber) {
+            final String receiptNumber, final String bankNumber, final String checkDate, final String bankName) {
         this.paymentType = paymentType;
         this.accountNumber = accountNumber;
         this.checkNumber = checkNumber;
         this.routingCode = routingCode;
         this.receiptNumber = receiptNumber;
         this.bankNumber = bankNumber;
+        this.bankName = bankName;
+        this.checkDate = checkDate;
     }
 
     public PaymentDetailData toData() {
         final PaymentTypeData paymentTypeData = this.paymentType.toData();
         final PaymentDetailData paymentDetailData = new PaymentDetailData(getId(), paymentTypeData, this.accountNumber, this.checkNumber,
-                this.routingCode, this.receiptNumber, this.bankNumber);
+                this.routingCode, this.receiptNumber, this.bankNumber, this.checkDate, this.bankName);
         return paymentDetailData;
     }
 
