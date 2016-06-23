@@ -59,7 +59,7 @@ import org.springframework.stereotype.Component;
 public class LoanPaymentInventoryApiResource {
 
 	private final Set<String> RESPONSE_DATA_PARAMETERS = new HashSet<>(
-			java.util.Arrays.asList("isDirectDebitActive", "id", "paymentInventoryPdc"));
+			java.util.Arrays.asList("isDirectDebitActive", "id","type","isSeriesCheques","isDispatched", "paymentInventoryPdc"));
 
 	private final String resourceNameForPermissions = "LOAN";
 
@@ -129,7 +129,7 @@ public class LoanPaymentInventoryApiResource {
 	@Path("template")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces({ MediaType.APPLICATION_JSON })
-	public String template(@QueryParam("loanId") final Long loanId, @Context final UriInfo uriInfo) {
+	public String template(@PathParam("loanId") final Long loanId, @Context final UriInfo uriInfo) {
 		this.context.authenticatedUser().validateHasReadPermission(this.resourceNameForPermissions);
 
 		LoanAccountData loanBasicDetails = this.loanReadPlatformService.retrieveOne(loanId);

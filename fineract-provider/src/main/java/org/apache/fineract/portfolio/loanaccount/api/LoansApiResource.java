@@ -88,10 +88,13 @@ import org.apache.fineract.portfolio.loanaccount.data.LoanTermVariationsData;
 import org.apache.fineract.portfolio.loanaccount.data.LoanTransactionData;
 import org.apache.fineract.portfolio.loanaccount.data.PaidInAdvanceData;
 import org.apache.fineract.portfolio.loanaccount.data.PaymentInventoryData;
+import org.apache.fineract.portfolio.loanaccount.data.PaymentInventoryPdcData;
 import org.apache.fineract.portfolio.loanaccount.data.RepaymentScheduleRelatedLoanData;
 import org.apache.fineract.portfolio.loanaccount.domain.LoanTermVariationType;
 import org.apache.fineract.portfolio.loanaccount.exception.LoanTemplateTypeRequiredException;
 import org.apache.fineract.portfolio.loanaccount.exception.NotSupportedLoanTemplateTypeException;
+import org.apache.fineract.portfolio.loanaccount.exception.PaymentInventoryNotFound;
+import org.apache.fineract.portfolio.loanaccount.exception.PaymentInventoryNotFoundException;
 import org.apache.fineract.portfolio.loanaccount.guarantor.data.GuarantorData;
 import org.apache.fineract.portfolio.loanaccount.guarantor.service.GuarantorReadPlatformService;
 import org.apache.fineract.portfolio.loanaccount.loanschedule.data.LoanScheduleData;
@@ -131,7 +134,7 @@ public class LoansApiResource {
 			"termFrequency", "termPeriodFrequencyType", "numberOfRepayments", "repaymentEvery", "interestRatePerPeriod",
 			"annualInterestRate", "repaymentFrequencyType", "transactionProcessingStrategyId",
 			"transactionProcessingStrategyName", "interestRateFrequencyType", "amortizationType", "interestType",
-			"interestCalculationPeriodType", LoanProductConstants.allowPartialPeriodInterestCalcualtionParamName,
+			"interestCalculationPeriodType","paymentInventory", LoanProductConstants.allowPartialPeriodInterestCalcualtionParamName,
 			"expectedFirstRepaymentOnDate", "graceOnPrincipalPayment", "recurringMoratoriumOnPrincipalPeriods",
 			"graceOnInterestPayment", "graceOnInterestCharged", "interestChargedFromDate", "timeline",
 			"totalFeeChargesAtDisbursement", "summary", "repaymentSchedule", "transactions", "charges",
@@ -412,7 +415,7 @@ public class LoansApiResource {
 
 		Collection<InterestRatePeriodData> interestRatesPeriods = this.loanReadPlatformService
 				.retrieveLoanInterestRatePeriodData(loanId);
-
+		
 		Collection<LoanTransactionData> loanRepayments = null;
 		LoanScheduleData repaymentSchedule = null;
 		Collection<LoanChargeData> charges = null;
@@ -510,10 +513,16 @@ public class LoansApiResource {
 
 			if (associationParameters.contains("paymentInventory")) {
 				mandatoryResponseParameters.add("paymentInventory");
-				paymentInventoryData = this.paymentInventoryReadPlatformService.retrieveBasedOnLoanId(loanId);
-				if (paymentInventoryData == null) {
+				try  {
+					paymentInventoryData = this.paymentInventoryReadPlatformService.retrieveBasedOnLoanId(loanId);
+					final Collection<PaymentInventoryPdcData> pdcInventoryData = this.paymentInventoryReadPlatformService.retrievePdcInventory(paymentInventoryData.getId());
+					
+					paymentInventoryData = new PaymentInventoryData(paymentInventoryData, pdcInventoryData);
+				}catch(final PaymentInventoryNotFound e){
+					e.printStackTrace();
 					paymentInventoryData = null;
 				}
+				
 			}
 
 			if (associationParameters.contains("meeting")) {

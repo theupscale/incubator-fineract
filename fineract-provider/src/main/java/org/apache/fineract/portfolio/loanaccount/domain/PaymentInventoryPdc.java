@@ -43,7 +43,7 @@ public class PaymentInventoryPdc extends AbstractPersistable<Long>{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@ManyToOne(optional = false)
+	  @ManyToOne(optional = false)
 	  @JoinColumn(name = "payment_id")
 	  private PaymentInventory paymentInventory;
 	
