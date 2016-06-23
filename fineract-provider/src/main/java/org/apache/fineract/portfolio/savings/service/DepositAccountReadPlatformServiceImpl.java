@@ -1015,8 +1015,10 @@ public class DepositAccountReadPlatformServiceImpl implements DepositAccountRead
                     final String routingCode = rs.getString("routingCode");
                     final String receiptNumber = rs.getString("receiptNumber");
                     final String bankNumber = rs.getString("bankNumber");
-                    paymentDetailData = new PaymentDetailData(id, paymentType, accountNumber, checkNumber, routingCode, receiptNumber,
-                            bankNumber);
+                    final String checkDate = rs.getString("checkDate");
+					final String bankName = rs.getString("bankName");
+					paymentDetailData = new PaymentDetailData(id, paymentType, accountNumber, checkNumber, routingCode,
+							receiptNumber, bankNumber, checkDate, bankName);
                 }
             }
 

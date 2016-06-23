@@ -1430,8 +1430,10 @@ public class LoanReadPlatformServiceImpl implements LoanReadPlatformService {
 					final String routingCode = rs.getString("routingCode");
 					final String receiptNumber = rs.getString("receiptNumber");
 					final String bankNumber = rs.getString("bankNumber");
+					final String checkDate = rs.getString("checkDate");
+					final String bankName = rs.getString("bankName");
 					paymentDetailData = new PaymentDetailData(id, paymentType, accountNumber, checkNumber, routingCode,
-							receiptNumber, bankNumber);
+							receiptNumber, bankNumber, checkDate, bankName);
 				}
 			}
 			final LocalDate date = JdbcSupport.getLocalDate(rs, "date");
