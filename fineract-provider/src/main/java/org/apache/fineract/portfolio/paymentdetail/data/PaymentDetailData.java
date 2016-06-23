@@ -39,9 +39,13 @@ public class PaymentDetailData {
     private final String receiptNumber;
     @SuppressWarnings("unused")
     private final String bankNumber;
+    @SuppressWarnings("unused")
+	private final String checkDate;
+    @SuppressWarnings("unused")
+	private final String bankName;
 
     public PaymentDetailData(final Long id, final PaymentTypeData paymentType, final String accountNumber, final String checkNumber,
-            final String routingCode, final String receiptNumber, final String bankNumber) {
+            final String routingCode, final String receiptNumber, final String bankNumber, final String checkDate, final String bankName) {
         this.id = id;
         this.paymentType = paymentType;
         this.accountNumber = accountNumber;
@@ -49,6 +53,9 @@ public class PaymentDetailData {
         this.routingCode = routingCode;
         this.receiptNumber = receiptNumber;
         this.bankNumber = bankNumber;
+        this.checkDate = checkDate;
+        this.bankName = bankName;
+        		
     }
     
     
