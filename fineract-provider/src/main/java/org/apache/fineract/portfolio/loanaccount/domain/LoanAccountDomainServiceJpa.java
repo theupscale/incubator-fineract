@@ -68,6 +68,7 @@ import org.apache.fineract.portfolio.loanaccount.service.LoanUtilService;
 import org.apache.fineract.portfolio.note.domain.Note;
 import org.apache.fineract.portfolio.note.domain.NoteRepository;
 import org.apache.fineract.portfolio.paymentdetail.domain.PaymentDetail;
+import org.apache.fineract.portfolio.paymenttype.domain.PaymentType;
 import org.apache.fineract.useradministration.domain.AppUser;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
@@ -75,6 +76,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.amazonaws.services.identitymanagement.model.statusType;
 
 @Service
 public class LoanAccountDomainServiceJpa implements LoanAccountDomainService {
@@ -150,7 +153,7 @@ public class LoanAccountDomainServiceJpa implements LoanAccountDomainService {
          * .validateRepaymentDateWithMeetingDate(transactionDate,
          * calendarInstance); }
          */
-
+        
         final List<Long> existingTransactionIds = new ArrayList<>();
         final List<Long> existingReversedTransactionIds = new ArrayList<>();
 
@@ -161,8 +164,17 @@ public class LoanAccountDomainServiceJpa implements LoanAccountDomainService {
             newRepaymentTransaction = LoanTransaction.recoveryRepayment(loan.getOffice(), repaymentAmount, paymentDetail, transactionDate,
                     txnExternalId, currentDateTime, currentUser);
         } else {
-            newRepaymentTransaction = LoanTransaction.repayment(loan.getOffice(), repaymentAmount, paymentDetail, transactionDate,
-                    txnExternalId, currentDateTime, currentUser);
+        	
+        		Integer statusType = null;
+        		PaymentType paymentType = paymentDetail.getPaymentType();
+        		
+        		if(paymentType.getValue().equals("PDC")){
+        			statusType = LoanTransactionStatusType.INPROGRESS.getValue();
+        		} else
+        			statusType = LoanTransactionStatusType.CLEAR.getValue();
+           
+			newRepaymentTransaction = LoanTransaction.repayment(loan.getOffice(), repaymentAmount, paymentDetail, transactionDate,
+                    txnExternalId, currentDateTime, currentUser,statusType);
         }
 
         LocalDate recalculateFrom = null;
@@ -638,7 +650,7 @@ public class LoanAccountDomainServiceJpa implements LoanAccountDomainService {
             String externalId = null;            
             final LocalDateTime currentDateTime = DateUtils.getLocalDateTimeOfTenant();
             payment = LoanTransaction.repayment(loan.getOffice(), payPrincipal.plus(interestPayable).plus(feePayable).plus(penaltyPayable),
-                    paymentDetail, foreClosureDate, externalId, currentDateTime, appUser);
+                    paymentDetail, foreClosureDate, externalId, currentDateTime, appUser,null);
             createdDate = createdDate.plusSeconds(1);
             payment.updateCreatedDate(createdDate.toDate());
             payment.updateLoan(loan);

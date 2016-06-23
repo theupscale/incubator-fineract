@@ -42,6 +42,8 @@ public interface LoanWritePlatformService {
 			Boolean isAccountTransfer);
 
 	CommandProcessingResult undoLoanDisbursal(Long loanId, JsonCommand command);
+	
+	CommandProcessingResult updateTransactionStatus(Long loanId, Long transactionId, JsonCommand command);
 
 	CommandProcessingResult makeLoanRepayment(Long loanId, JsonCommand command, boolean isRecoveryRepayment);
 
