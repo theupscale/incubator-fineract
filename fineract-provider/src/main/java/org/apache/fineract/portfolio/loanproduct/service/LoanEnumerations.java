@@ -26,6 +26,7 @@ import org.apache.fineract.portfolio.common.domain.NthDayType;
 import org.apache.fineract.portfolio.common.domain.PeriodFrequencyType;
 import org.apache.fineract.portfolio.loanaccount.data.LoanStatusEnumData;
 import org.apache.fineract.portfolio.loanaccount.data.LoanTransactionEnumData;
+import org.apache.fineract.portfolio.loanaccount.data.LoanTransactionStatusEnumData;
 import org.apache.fineract.portfolio.loanaccount.domain.LoanStatus;
 import org.apache.fineract.portfolio.loanaccount.domain.LoanTermVariationType;
 import org.apache.fineract.portfolio.loanaccount.domain.LoanTransactionType;
@@ -402,6 +403,9 @@ public class LoanEnumerations {
         }
         return optionData;
     }
+    
+    
+    
 
     public static EnumOptionData status(final LoanStatusEnumData status) {
 

@@ -2769,5 +2769,14 @@ public class CommandWrapperBuilder {
 		this.href = "/loans/" + loanId + "/paymentinventory/" + inventoryId;
 		return this;
 	}
+	
+	public CommandWrapperBuilder updateTransactionStatus(final Long loanId, final Long transactionId) {
+		this.actionName = "UPDATETRANSACTIONSTATUS";
+		this.entityName = "LOAN";
+		this.entityId = transactionId;
+		this.loanId = loanId;
+		this.href = "/loans/" + loanId + "/transactions/" + transactionId;
+		return this;
+	}
 
 }

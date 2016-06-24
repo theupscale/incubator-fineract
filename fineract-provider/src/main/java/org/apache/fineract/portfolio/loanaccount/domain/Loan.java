@@ -5138,6 +5138,8 @@ public class Loan extends AbstractPersistable<Long> {
 		}
 		return installment;
 	}
+	
+	
 
 	public BigDecimal getApprovedPrincipal() {
 		return this.approvedPrincipal;
