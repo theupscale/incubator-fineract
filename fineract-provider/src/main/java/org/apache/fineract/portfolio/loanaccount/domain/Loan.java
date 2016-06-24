@@ -147,8 +147,6 @@ import com.google.gson.JsonPrimitive;
 
 @Entity
 @Component
-@Table(name = "m_loan", uniqueConstraints = { @UniqueConstraint(columnNames = { "account_no" }, name = "loan_account_no_UNIQUE"),
-        @UniqueConstraint(columnNames = { "external_id" }, name = "loan_externalid_UNIQUE") })
 @Table(name = "m_loan", uniqueConstraints = {
 		@UniqueConstraint(columnNames = { "account_no" }, name = "loan_account_no_UNIQUE"),
 		@UniqueConstraint(columnNames = { "external_id" }, name = "loan_externalid_UNIQUE") })
@@ -6409,25 +6407,25 @@ public class Loan extends AbstractPersistable<Long> {
 		receivables[2] = receivablePenalty;
 		return receivables;
 	}
+	
+	public void reverseAccrualsAfter(final LocalDate tillDate) {
+        for (final LoanTransaction transaction : this.loanTransactions) {
+            if (transaction.isAccrual() && transaction.getTransactionDate().isAfter(tillDate)) {
+                transaction.reverse();
+            }
+        }
+    }
 
-	public void handleForeClosureTransactions(final List<LoanTransaction> repaymentTransaction,
-			final LocalDate foreClosureDate, final LoanLifecycleStateMachine loanLifecycleStateMachine) {
+	public ChangedTransactionDetail handleForeClosureTransactions(final LoanTransaction repaymentTransaction,
+			 final LoanLifecycleStateMachine loanLifecycleStateMachine,final ScheduleGeneratorDTO scheduleGeneratorDTO, final AppUser appUser) {
 
-		LoanEvent event = LoanEvent.LOAN_FORECLOSURE;
-
-		validateAccountStatus(event);
-
-		MonetaryCurrency currency = getCurrency();
-
-		final LoanRepaymentScheduleTransactionProcessor loanRepaymentScheduleTransactionProcessor = this.transactionProcessorFactory
-				.determineProcessor(this.transactionProcessingStrategy);
-
-		loanRepaymentScheduleTransactionProcessor.processTransactionsFromDerivedFields(repaymentTransaction, currency,
-				this.repaymentScheduleInstallments, charges());
-		this.loanTransactions.addAll(repaymentTransaction);
-		this.loanSubStatus = LoanSubStatus.FORECLOSED.getValue();
-		updateLoanSummaryDerivedFields();
-		doPostLoanTransactionChecks(foreClosureDate, loanLifecycleStateMachine);
+		 LoanEvent event = LoanEvent.LOAN_FORECLOSURE;
+	        validateAccountStatus(event);
+	        validateForForeclosure(repaymentTransaction.getTransactionDate());
+	        this.loanSubStatus = LoanSubStatus.FORECLOSED.getValue();
+	        applyAccurals(appUser);
+	        return handleRepaymentOrRecoveryOrWaiverTransaction(repaymentTransaction, loanLifecycleStateMachine, null, scheduleGeneratorDTO,
+	                appUser);
 	}
 
 	public Money retrieveAccruedAmountAfterDate(final LocalDate tillDate) {
