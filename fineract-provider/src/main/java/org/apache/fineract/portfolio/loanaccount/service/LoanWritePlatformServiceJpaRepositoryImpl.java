@@ -1060,7 +1060,7 @@ public class LoanWritePlatformServiceJpaRepositoryImpl implements LoanWritePlatf
 		final LocalDate transactionDate = command.localDateValueOfParameterNamed("transactionDate");
 		final BigDecimal transactionAmount = command.bigDecimalValueOfParameterNamed("transactionAmount");
 		final String txnExternalId = command.stringValueOfParameterNamedAllowingNull("externalId");
-
+		
 		final Map<String, Object> changes = new LinkedHashMap<>();
 		changes.put("transactionDate", command.stringValueOfParameterNamed("transactionDate"));
 		changes.put("transactionAmount", command.stringValueOfParameterNamed("transactionAmount"));
@@ -1190,7 +1190,7 @@ public class LoanWritePlatformServiceJpaRepositoryImpl implements LoanWritePlatf
 
 			final PaymentInventoryPdc paymentInventoryPdc = this.paymentInventoryPdc.findOne(payment.getId());
 
-			if(transactionToAdjust.getTransactionStatus() == 1 && transactionAmount.equals(new BigDecimal(0))) {
+			if(transactionAmount.equals(new BigDecimal(0))) {
 				transactionToAdjust.setTransactionStatus(3);
 				paymentInventoryPdc.setPresentationStatus(4);
 			}
