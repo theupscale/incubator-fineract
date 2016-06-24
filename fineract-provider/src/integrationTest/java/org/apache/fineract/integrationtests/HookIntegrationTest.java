@@ -18,8 +18,6 @@
  */
 package org.apache.fineract.integrationtests;
 
-import org.junit.Assert;
-
 import static org.junit.Assert.fail;
 
 import java.util.concurrent.TimeUnit;
@@ -28,6 +26,7 @@ import org.apache.fineract.integrationtests.common.HookHelper;
 import org.apache.fineract.integrationtests.common.OfficeHelper;
 import org.apache.fineract.integrationtests.common.Utils;
 import org.apache.http.conn.HttpHostConnectException;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 

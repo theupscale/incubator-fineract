@@ -46,6 +46,11 @@
 	<logger name="org.springframework.beans" level="info" />
 	<logger name="net.sf.ehcache" level="error" />
 	<logger name="org.hibernate.cache" level="error" />
+	<logger name ="org.springframework.jdbc.core.JdbcTemplate" level="debug"/>
+	<logger name="org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator" level="debug"/>
+	
+	<logger name="org.apache.fineract.infrastructure.core.service.RoutingDataSource" level="debug"/>
+	
 
 	<root level="info">
 		<appender-ref ref="STDOUT" />

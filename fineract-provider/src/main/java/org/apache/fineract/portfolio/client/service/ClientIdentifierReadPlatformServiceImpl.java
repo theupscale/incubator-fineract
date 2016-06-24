@@ -36,6 +36,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
+import org.joda.time.LocalDate;
 
 @Service
 public class ClientIdentifierReadPlatformServiceImpl implements ClientIdentifierReadPlatformService {
@@ -93,10 +94,12 @@ public class ClientIdentifierReadPlatformServiceImpl implements ClientIdentifier
         public ClientIdentityMapper() {}
 
         public String schema() {
-            return "ci.id as id, ci.client_id as clientId, ci.document_type_id as documentTypeId, ci.status as status, ci.document_key as documentKey,"
-                    + " ci.description as description, cv.code_value as documentType "
-                    + " from m_client_identifier ci, m_client c, m_office o, m_code_value cv"
-                    + " where ci.client_id=c.id and c.office_id=o.id" + " and ci.document_type_id=cv.id"
+            return"ci.id as id, ci.client_id as clientId, ci.document_type_id as documentTypeId, ci.proof_type_id as proofTypeId, ci.status as status, ci.document_key as documentKey,"
+            		+ " ci.validity as validity, ci.is_life_time as isLifeTime,"
+            		+ " pv.code_value as proofType,"
+            		+ " ci.description as description, cv.code_value as documentType "
+                    + " from m_client_identifier ci, m_client c, m_office o, m_code_value cv, m_code_value pv "
+                    + " where ci.client_id=c.id and c.office_id=o.id" + " and ci.document_type_id=cv.id and ci.proof_type_id=pv.id"
                     + " and ci.client_id = ? and o.hierarchy like ? ";
         }
 
@@ -107,13 +110,16 @@ public class ClientIdentifierReadPlatformServiceImpl implements ClientIdentifier
             final Long clientId = JdbcSupport.getLong(rs, "clientId");
             final Long documentTypeId = JdbcSupport.getLong(rs, "documentTypeId");
             final String documentKey = rs.getString("documentKey");
+            final Long proofTypeId = JdbcSupport.getLong(rs,"proofTypeId");
             final String description = rs.getString("description");
+            final LocalDate validity = JdbcSupport.getLocalDate(rs, "validity");
+            final Boolean isLifeTime = rs.getBoolean("isLifeTime");
             final String documentTypeName = rs.getString("documentType");
+            final String proofTypeName = rs.getString("proofType");
             final CodeValueData documentType = CodeValueData.instance(documentTypeId, documentTypeName);
+            final CodeValueData proofType = CodeValueData.instance(proofTypeId, proofTypeName);
             final String status = ClientIdentifierStatus.fromInt(rs.getInt("status")).getCode();
-            return ClientIdentifierData.singleItem(id, clientId, documentType, documentKey, status, description);
+            return ClientIdentifierData.singleItem(id, clientId, documentType, proofType, documentKey, validity, isLifeTime, null, null, status, description);
         }
-
-    }
-
+      }
 }

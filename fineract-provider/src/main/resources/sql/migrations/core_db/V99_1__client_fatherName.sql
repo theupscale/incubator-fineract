@@ -1,0 +1,1 @@
+ALTER TABLE  `m_client` ADD  `fathername` VARCHAR(100) DEFAULT NULL;

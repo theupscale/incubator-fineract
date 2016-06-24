@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="java">
+    <CLASSES />
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/fineract-provider/src/integrationTest/java" />
+      <root url="file://$PROJECT_DIR$/fineract-provider/src/main/java" />
+      <root url="file://$PROJECT_DIR$/fineract-provider/src/test/java" />
+    </SOURCES>
+  </library>
+</component>

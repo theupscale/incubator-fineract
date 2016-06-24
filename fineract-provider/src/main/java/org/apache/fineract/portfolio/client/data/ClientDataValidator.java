@@ -18,15 +18,8 @@
  */
 package org.apache.fineract.portfolio.client.data;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.google.gson.JsonElement;
+import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang.StringUtils;
 import org.apache.fineract.infrastructure.core.api.JsonCommand;
 import org.apache.fineract.infrastructure.core.data.ApiParameterError;
@@ -40,8 +33,8 @@ import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.google.gson.JsonElement;
-import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
+import java.util.*;
 
 @Component
 public final class ClientDataValidator {
@@ -94,6 +87,11 @@ public final class ClientDataValidator {
             final Long savingsProductId = this.fromApiJsonHelper.extractLongNamed(ClientApiConstants.savingsProductIdParamName, element);
             baseDataValidator.reset().parameter(ClientApiConstants.savingsProductIdParamName).value(savingsProductId).ignoreIfNull()
                     .longGreaterThanZero();
+        }
+
+        if (this.fromApiJsonHelper.parameterExists(ClientApiConstants.fathernameParamName,element)){
+            final String fathername = this.fromApiJsonHelper.extractStringNamed(ClientApiConstants.fathernameParamName,element);
+            baseDataValidator.reset().parameter(ClientApiConstants.fathernameParamName).value(fathername).ignoreIfNull();
         }
 
         if (isFullnameProvided(element) || isIndividualNameProvided(element)) {
@@ -418,6 +416,12 @@ public final class ClientDataValidator {
             final Long savingsProductId = this.fromApiJsonHelper.extractLongNamed(ClientApiConstants.savingsProductIdParamName, element);
             baseDataValidator.reset().parameter(ClientApiConstants.savingsProductIdParamName).value(savingsProductId).ignoreIfNull()
                     .longGreaterThanZero();
+        }
+
+        if (this.fromApiJsonHelper.parameterExists(ClientApiConstants.fathernameParamName,element)){
+            atLeastOneParameterPassedForUpdate = true;
+            final String fatheraname = this.fromApiJsonHelper.extractStringNamed(ClientApiConstants.fathernameParamName,element);
+            baseDataValidator.reset().parameter(ClientApiConstants.fathernameParamName).value(fatheraname).ignoreIfNull();
         }
 
         if (this.fromApiJsonHelper.parameterExists(ClientApiConstants.dateOfBirthParamName, element)) {

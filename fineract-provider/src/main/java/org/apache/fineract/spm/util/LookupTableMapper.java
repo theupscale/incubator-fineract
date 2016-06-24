@@ -18,12 +18,12 @@
  */
 package org.apache.fineract.spm.util;
 
+import java.util.*;
+
 import org.apache.fineract.spm.data.LookupTableData;
 import org.apache.fineract.spm.data.LookupTableEntry;
 import org.apache.fineract.spm.domain.LookupTable;
 import org.apache.fineract.spm.domain.Survey;
-
-import java.util.*;
 
 public class LookupTableMapper {
 

@@ -60,7 +60,7 @@ import org.springframework.stereotype.Component;
 public class ClientIdentifiersApiResource {
 
     private static final Set<String> CLIENT_IDENTIFIER_DATA_PARAMETERS = new HashSet<>(Arrays.asList("id", "clientId",
-            "documentType", "documentKey", "description", "allowedDocumentTypes"));
+            "documentType", "proofType", "documentKey", "validity", "isLifeTime", "locale", "dateFormat", "description", "allowedDocumentTypes"));
 
     private final String resourceNameForPermissions = "CLIENTIDENTIFIER";
 
@@ -111,8 +111,8 @@ public class ClientIdentifiersApiResource {
         this.context.authenticatedUser().validateHasReadPermission(this.resourceNameForPermissions);
 
         final Collection<CodeValueData> codeValues = this.codeValueReadPlatformService.retrieveCodeValuesByCode("Customer Identifier");
-        final ClientIdentifierData clientIdentifierData = ClientIdentifierData.template(codeValues);
-
+        final Collection<CodeValueData> proofValues = this.codeValueReadPlatformService.retrieveCodeValuesByCode("Proof Type");        
+        final ClientIdentifierData clientIdentifierData = ClientIdentifierData.template(codeValues,proofValues);
         final ApiRequestJsonSerializationSettings settings = this.apiRequestParameterHelper.process(uriInfo.getQueryParameters());
         return this.toApiJsonSerializer.serialize(settings, clientIdentifierData, CLIENT_IDENTIFIER_DATA_PARAMETERS);
     }
@@ -157,7 +157,8 @@ public class ClientIdentifiersApiResource {
                 clientIdentifierId);
         if (settings.isTemplate()) {
             final Collection<CodeValueData> codeValues = this.codeValueReadPlatformService.retrieveCodeValuesByCode("Customer Identifier");
-            clientIdentifierData = ClientIdentifierData.template(clientIdentifierData, codeValues);
+            final Collection<CodeValueData> proofValues = this.codeValueReadPlatformService.retrieveCodeValuesByCode("Proof Type");
+            clientIdentifierData = ClientIdentifierData.template(clientIdentifierData, codeValues, proofValues);
         }
 
         return this.toApiJsonSerializer.serialize(settings, clientIdentifierData, CLIENT_IDENTIFIER_DATA_PARAMETERS);
