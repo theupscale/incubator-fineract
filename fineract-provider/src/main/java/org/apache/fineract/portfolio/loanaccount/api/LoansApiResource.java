@@ -145,7 +145,7 @@ public class LoansApiResource {
 			"chargeOptions", "loanOfficerOptions", "loanPurposeOptions", "loanCollateralOptions", "chargeTemplate",
 			"calendarOptions", "syncDisbursementWithMeeting", "loanCounter", "loanProductCounter", "notes",
 			"accountLinkingOptions", "linkedAccount", "interestRateDifferential", "isFloatingInterestRate",
-			"interestRatesPeriods"));
+			"interestRatesPeriods",flatInterestRatePerPeriod));
 
 	private final Set<String> LOAN_APPROVAL_DATA_PARAMETERS = new HashSet<>(
 			Arrays.asList("approvalDate", "approvalAmount"));
